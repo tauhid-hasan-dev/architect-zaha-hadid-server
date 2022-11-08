@@ -22,6 +22,7 @@ async function run() {
         const sliderCollection = client.db('architectTauhid').collection('sliders');
         const reviewCollection = client.db('architectTauhid').collection('reviews');
 
+        //all the services api
         app.get('/services', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
@@ -29,6 +30,7 @@ async function run() {
             res.send(services)
         })
 
+        //api for load data in slider in home page
         app.get('/sliders', async (req, res) => {
             const query = {};
             const cursor = sliderCollection.find(query);
@@ -36,6 +38,7 @@ async function run() {
             res.send(sliders)
         })
 
+        //api for specific service to show of that specific service
         app.get('/servicedetails/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -43,12 +46,25 @@ async function run() {
             res.send(service);
         })
 
-
+        //post api to create and store customer review 
         app.post('/reviews', async (req, res) => {
             const review = req.body;
             console.log(review)
             const result = await reviewCollection.insertOne(review);
             res.send(result);
+        })
+
+        //query by service id to load review in the service details page
+        app.get('/reviews', async (req, res) => {
+            let query = {};
+            if (req.query.serviceId) {
+                query = {
+                    serviceId: req.query.serviceId
+                }
+            }
+            const result = reviewCollection.find(query);
+            const reviews = await result.toArray()
+            res.send(reviews)
         })
 
 
