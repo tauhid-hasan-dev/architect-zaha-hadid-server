@@ -62,6 +62,13 @@ async function run() {
                     serviceId: req.query.serviceId
                 }
             }
+
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+
             const result = reviewCollection.find(query);
             const reviews = await result.toArray()
             res.send(reviews)
