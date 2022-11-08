@@ -20,6 +20,7 @@ async function run() {
     try {
         const serviceCollection = client.db('architectTauhid').collection('services');
         const sliderCollection = client.db('architectTauhid').collection('sliders');
+        const reviewCollection = client.db('architectTauhid').collection('reviews');
 
         app.get('/services', async (req, res) => {
             const query = {};
@@ -40,6 +41,14 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const service = await serviceCollection.findOne(query);
             res.send(service);
+        })
+
+
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            console.log(review)
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
         })
 
 
