@@ -22,11 +22,19 @@ async function run() {
         const sliderCollection = client.db('architectTauhid').collection('sliders');
         const reviewCollection = client.db('architectTauhid').collection('reviews');
 
-        //all the services api
+        //3 services to show in home page
         app.get('/services', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.limit(3).toArray();
+            res.send(services)
+        })
+
+        //all services to load service page
+        app.get('/allservices', async (req, res) => {
+            const query = {};
+            const cursor = serviceCollection.find(query);
+            const services = await cursor.toArray();
             res.send(services)
         })
 
@@ -69,7 +77,7 @@ async function run() {
                 }
             }
 
-            const result = reviewCollection.find(query);
+            const result = reviewCollection.find(query).sort({ dateField: -1 });
             const reviews = await result.toArray()
             res.send(reviews)
         })
