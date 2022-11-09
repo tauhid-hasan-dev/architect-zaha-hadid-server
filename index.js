@@ -13,7 +13,7 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.BB_USER}:${process.env.DB_PASSWORD}@cluster0.jjvuikj.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri)
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
@@ -82,7 +82,7 @@ async function run() {
             res.send(reviews)
         })
 
-
+        //getting reviews by id
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
@@ -90,13 +90,41 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: ObjectId(id) }
+            const result = await reviewCollection.findOne(query);
+            res.send(result);
+        })
 
+
+        //api created for inserting service 
         app.post('/allservices', async (req, res) => {
             const service = req.body;
             console.log(service);
             const result = await serviceCollection.insertOne(service);
             res.send(result);
         })
+
+
+        app.put('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            //console.log(id)
+            const filter = { _id: ObjectId(id) };
+            const review = req.body;
+            console.log(review);
+
+            const option = { upsert: true };
+            const updatedReview = {
+                $set: {
+                    reviewMessage: review.reviewMessage
+                }
+            }
+            const result = await reviewCollection.updateOne(filter, updatedReview, option);
+            res.send(result);
+        })
+
 
 
     } finally {
