@@ -90,6 +90,8 @@ async function run() {
             res.send(result);
         })
 
+        //api for a single review
+
         app.get('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id)
@@ -99,7 +101,7 @@ async function run() {
         })
 
 
-        //api created for inserting service 
+        //add service api
         app.post('/allservices', async (req, res) => {
             const service = req.body;
             console.log(service);
@@ -107,7 +109,7 @@ async function run() {
             res.send(result);
         })
 
-
+        //update review api
         app.put('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             //console.log(id)
