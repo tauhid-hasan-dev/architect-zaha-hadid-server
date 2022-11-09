@@ -26,14 +26,14 @@ async function run() {
         app.get('/services', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
-            const services = await cursor.limit(3).toArray();
+            const services = await cursor.limit(3).sort({ dateField: -1 }).toArray();
             res.send(services)
         })
 
         //all services to load service page
         app.get('/allservices', async (req, res) => {
             const query = {};
-            const cursor = serviceCollection.find(query);
+            const cursor = serviceCollection.find(query).sort({ dateField: -1 });
             const services = await cursor.toArray();
             res.send(services)
         })
@@ -90,6 +90,13 @@ async function run() {
             res.send(result);
         })
 
+
+        app.post('/allservices', async (req, res) => {
+            const service = req.body;
+            console.log(service);
+            const result = await serviceCollection.insertOne(service);
+            res.send(result);
+        })
 
 
     } finally {
