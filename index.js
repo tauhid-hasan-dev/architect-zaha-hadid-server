@@ -92,7 +92,6 @@ async function run() {
 
         //query by service id to load review in the service details page
         app.get('/reviews', verifyJWT, async (req, res) => {
-            /* const authHeader = req.headers.authorization; */
 
             const decoded = req.decoded;
 
@@ -101,12 +100,6 @@ async function run() {
             }
 
             let query = {};
-
-            if (req.query.serviceId) {
-                query = {
-                    serviceId: req.query.serviceId
-                }
-            }
 
             if (req.query.email) {
                 query = {
@@ -119,8 +112,21 @@ async function run() {
             res.send(reviews)
         })
 
-        //getting reviews by id
-        app.delete('/reviews/:id', async (req, res) => {
+
+        app.get('/reviewsbyid', async (req, res) => {
+            let query = {}
+            if (req.query.serviceId) {
+                query = {
+                    serviceId: req.query.serviceId
+                }
+            }
+            const result = reviewCollection.find(query).sort({ dateField: -1 });
+            const reviews = await result.toArray()
+            res.send(reviews)
+        })
+
+        //deleting reviews by id
+        app.delete('/reviews/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await reviewCollection.deleteOne(query);
@@ -147,7 +153,7 @@ async function run() {
         })
 
         //update review api
-        app.put('/reviews/:id', async (req, res) => {
+        app.put('/reviews/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             //console.log(id)
             const filter = { _id: ObjectId(id) };
